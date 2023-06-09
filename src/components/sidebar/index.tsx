@@ -25,7 +25,8 @@ export default function Sidebar() {
       <div>
         <Accordion />
       </div>
+
       <Button type="logout" />
-    </div>
+    </div >
   );
 }

@@ -6,9 +6,9 @@ const prisma = new PrismaClient();
 export default async function Page() {
   const session = await getServerSession(authOptions);
   console.log("Session in user/page.tsx", session);
-
   return (
     <div>
+
       <h1>Page</h1>
     </div>
   );

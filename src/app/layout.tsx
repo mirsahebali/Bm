@@ -1,5 +1,6 @@
 import "./globals.css";
-
+import Sidebar from "@/components/sidebar/index";
+import Providers from "./Providers";
 export const metadata = {
   title: "Bookmark Manager - Atomic House",
   description: "Created by Mir Saheb Ali",
@@ -16,7 +17,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head></head>
-      <body className={``}>{children}</body>
+      <body
+        className={`flex dark:bg-[#041C32] ease-in-out duration-300 dark:text-white`}
+      >
+        <Providers>
+          <div className="w-[20%]">
+            <Sidebar />
+          </div>
+          {children}
+        </Providers>
+      </body>
     </html>
   );
 }

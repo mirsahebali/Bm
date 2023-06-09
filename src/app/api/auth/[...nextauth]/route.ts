@@ -4,6 +4,7 @@ import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { Adapter } from "next-auth/adapters";
+import EmailProvider from "next-auth/providers/email";
 const prisma = new PrismaClient();
 export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
@@ -13,7 +14,14 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
       clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!,
     }),
+    EmailProvider({
+      server: process.env.NEXT_PUBLIC_EMAIL_SERVER!,
+      from: process.env.NEXT_PUBLIC_EMAIL_FROM!,
+    }),
   ],
+  events: {
+    async signIn(message) { },
+  },
 };
 
 const handler = NextAuth(authOptions);

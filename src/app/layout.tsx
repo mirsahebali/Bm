@@ -16,7 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head></head>
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body
         className={`flex dark:bg-[#041C32] ease-in-out duration-300 dark:text-white`}
       >

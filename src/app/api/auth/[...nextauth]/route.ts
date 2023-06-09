@@ -20,7 +20,17 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   events: {
-    async signIn(message) { },
+    async signIn(message) {
+      console.log("is new user?", message.isNewUser);
+      console.log("message", message);
+    },
+    async createUser(message) {
+      await prisma.userData.create({
+        data: {
+          userId: message.user.id,
+        },
+      });
+    },
   },
 };
 

@@ -1,4 +1,5 @@
 import "./globals.css";
+import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar/index";
 import Providers from "./Providers";
 export const metadata = {
@@ -9,22 +10,17 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body
-        className={`flex dark:bg-[#041C32] ease-in-out duration-300 dark:text-white`}
-      >
+      <body className={`flex dark:bg-[#041C32] ease-in-out duration-300 dark:text-white`}>
         <Providers>
-          <div className="w-[20%]">
+          <div className="w-[20%] flex">
             <Sidebar />
+            <Navbar />
           </div>
           {children}
         </Providers>

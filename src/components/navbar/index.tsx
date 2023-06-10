@@ -3,11 +3,14 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { AiFillDelete } from "react-icons/ai";
+import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { AiOutlineLogin, AiFillEdit, AiOutlineLogout } from "react-icons/ai";
 export default function Example() {
+  const { data: session } = useSession();
   return (
     <div className=" w-56 text-right float-right absolute right-0">
-      <Menu as="div" className="relative inline-block text-left">
+      <Menu as="div" className="relative dark:border-gray-100 inline-block text-left">
         <div>
           <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
             Profile
@@ -34,41 +37,28 @@ export default function Example() {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <div className="px-1 py-1 ">
+          <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white  shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <div className="px-1 py-1">
+              <Menu.Item>{() => <div className="dark:text-black">Hello</div>}</Menu.Item>
               <Menu.Item>
                 {({ active }) => (
-                  <button
+                  <Link
+                    href={`/profile`}
                     className={`${
                       active ? "bg-blue-500 text-white" : "text-gray-900"
                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   >
                     {active ? (
-                      <EditActiveIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+                      <AiFillEdit className="mr-2 h-5 w-5 text-gray-50" aria-hidden="true" />
                     ) : (
-                      <EditInactiveIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+                      <AiFillEdit className="mr-2 h-5 w-5 text-blue-600" aria-hidden="true" />
                     )}
-                    Edit
-                  </button>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    className={`${
-                      active ? "bg-blue-500 text-white" : "text-gray-900"
-                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                  >
-                    {active ? (
-                      <DuplicateActiveIcon className="mr-2 h-5 w-5" aria-hidden="true" />
-                    ) : (
-                      <DuplicateInactiveIcon className="mr-2 h-5 w-5" aria-hidden="true" />
-                    )}
-                    Duplicate
-                  </button>
+                    Edit Profile
+                  </Link>
                 )}
               </Menu.Item>
             </div>
+            <div className="px-1 py-1"></div>
             <div className="px-1 py-1">
               <Menu.Item>
                 {({ active }) => (
@@ -76,50 +66,23 @@ export default function Example() {
                     className={`${
                       active ? "bg-blue-500 text-white" : "text-gray-900"
                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    onClick={() => (session ? signOut() : signIn())}
                   >
-                    {active ? (
-                      <ArchiveActiveIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+                    {session ? (
+                      active ? (
+                        <AiOutlineLogout className="mr-2 h-5 w-5 text-gray-50" aria-hidden="true" />
+                      ) : (
+                        <AiOutlineLogout
+                          className="mr-2 h-5 w-5 text-blue-400"
+                          aria-hidden="true"
+                        />
+                      )
+                    ) : active ? (
+                      <AiOutlineLogin className="mr-2 h-5 w-5 text-gray-50" aria-hidden="true" />
                     ) : (
-                      <ArchiveInactiveIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+                      <AiOutlineLogout className="mr-2 h-5 w-5 text-blue-600" aria-hidden="true" />
                     )}
-                    Archive
-                  </button>
-                )}
-              </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    className={`${
-                      active ? "bg-blue-500 text-white" : "text-gray-900"
-                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                  >
-                    {active ? (
-                      <MoveActiveIcon className="mr-2 h-5 w-5" aria-hidden="true" />
-                    ) : (
-                      <MoveInactiveIcon className="mr-2 h-5 w-5" aria-hidden="true" />
-                    )}
-                    Move
-                  </button>
-                )}
-              </Menu.Item>
-            </div>
-            <div className="px-1 py-1">
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    className={`${
-                      active ? "bg-blue-500 text-white" : "text-gray-900"
-                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                  >
-                    {active ? (
-                      <DeleteActiveIcon className="mr-2 h-5 w-5 text-blue-400" aria-hidden="true" />
-                    ) : (
-                      <DeleteInactiveIcon
-                        className="mr-2 h-5 w-5 text-blue-400"
-                        aria-hidden="true"
-                      />
-                    )}
-                    Delete
+                    {session ? "Log out" : "Login"}
                   </button>
                 )}
               </Menu.Item>
@@ -143,63 +106,6 @@ function EditActiveIcon(props: any) {
   return (
     <svg {...props} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M4 13V16H7L16 7L13 4L4 13Z" fill="#8B5CF6" stroke="#C4B5FD" strokeWidth="2" />
-    </svg>
-  );
-}
-
-function DuplicateInactiveIcon(props: any) {
-  return (
-    <svg {...props} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 4H12V12H4V4Z" fill="#EDE9FE" stroke="#A78BFA" strokeWidth="2" />
-      <path d="M8 8H16V16H8V8Z" fill="#EDE9FE" stroke="#A78BFA" strokeWidth="2" />
-    </svg>
-  );
-}
-
-function DuplicateActiveIcon(props: any) {
-  return (
-    <svg {...props} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 4H12V12H4V4Z" fill="#8B5CF6" stroke="#C4B5FD" strokeWidth="2" />
-      <path d="M8 8H16V16H8V8Z" fill="#8B5CF6" stroke="#C4B5FD" strokeWidth="2" />
-    </svg>
-  );
-}
-
-function ArchiveInactiveIcon(props: any) {
-  return (
-    <svg {...props} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="5" y="8" width="10" height="8" fill="#EDE9FE" stroke="#A78BFA" strokeWidth="2" />
-      <rect x="4" y="4" width="12" height="4" fill="#EDE9FE" stroke="#A78BFA" strokeWidth="2" />
-      <path d="M8 12H12" stroke="#A78BFA" strokeWidth="2" />
-    </svg>
-  );
-}
-function ArchiveActiveIcon(props: any) {
-  return (
-    <svg {...props} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="5" y="8" width="10" height="8" fill="#8B5CF6" stroke="#C4B5FD" strokeWidth="2" />
-      <rect x="4" y="4" width="12" height="4" fill="#8B5CF6" stroke="#C4B5FD" strokeWidth="2" />
-      <path d="M8 12H12" stroke="#A78BFA" strokeWidth="2" />
-    </svg>
-  );
-}
-
-function MoveInactiveIcon(props: any) {
-  return (
-    <svg {...props} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 4H16V10" stroke="#A78BFA" strokeWidth="2" />
-      <path d="M16 4L8 12" stroke="#A78BFA" strokeWidth="2" />
-      <path d="M8 6H4V16H14V12" stroke="#A78BFA" strokeWidth="2" />
-    </svg>
-  );
-}
-
-function MoveActiveIcon(props: any) {
-  return (
-    <svg {...props} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 4H16V10" stroke="#C4B5FD" strokeWidth="2" />
-      <path d="M16 4L8 12" stroke="#C4B5FD" strokeWidth="2" />
-      <path d="M8 6H4V16H14V12" stroke="#C4B5FD" strokeWidth="2" />
     </svg>
   );
 }

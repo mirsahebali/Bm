@@ -9,23 +9,20 @@ export default function Toggle() {
   useEffect(() => {
     if (window.matchMedia("(prefers-color-scheme:dark)").matches) {
       setTheme("dark");
-      dispatch(toggleTheme("dark"))
     } else {
       setTheme("light");
-      dispatch(toggleTheme("light"))
     }
   }, []);
   useEffect(() => {
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
-      dispatch(toggleTheme("dark"))
     } else {
       document.documentElement.classList.remove("dark");
-      dispatch(toggleTheme("light"))
     }
   }, [theme]);
   const handleSwitchTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
+    dispatch(toggleTheme(theme ==="dark"? "light": "dark"))
   };
   return (
     <button

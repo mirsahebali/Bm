@@ -12,7 +12,8 @@ import { RootState } from "@/store/store";
 export default function Sidebar() {
   const { data: session } = useSession();
   console.log(session);
-
+const theme = useAppSelector((store: RootState)=> store.theme)
+  
 
   return (
     <div className=" mr-3 my-2 p-10 rounded-r-xl h-screen flex flex-col items-center dark:bg-[#064663] ">
@@ -21,7 +22,7 @@ export default function Sidebar() {
         {/* <SvgLogo/> */}
         <div className="flex justify-center ">
           <Link href={`https://atomichouse.co`} target="_blank">
-            <Image src={isDark ? LightSvgLogo : DarkSvgLogo} alt="logo" height={40} width={40} />
+            <Image src={theme.theme === "dark"? LightSvgLogo : DarkSvgLogo} alt="logo" height={40} width={40} />
           </Link>
         </div>
 

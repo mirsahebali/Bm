@@ -32,6 +32,7 @@ const theme = useAppSelector((store: RootState)=> store.theme)
             {session.user?.name}{" "}
           </div>
         ) : (
+
           <Button type="login" />
         )}
       </div>
@@ -41,7 +42,6 @@ const theme = useAppSelector((store: RootState)=> store.theme)
         <Accordion />
       </div>
 
-      <Button type="logout" />
     </div>
   );
 }

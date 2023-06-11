@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Sidebar />
             <Navbar />
             <Workspace />
-            
+            <CreateWorkspace />
           </div>
           {children}
         </Providers>

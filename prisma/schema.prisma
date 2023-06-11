@@ -1,10 +1,10 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("NEXT_PUBLIC_DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model Account {
@@ -13,15 +13,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -35,14 +34,14 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String?    @unique
+  email         String?     @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  UserData      UserData[] @relation
+  workspaces    Workspace[]
 }
 
 model VerificationToken {
@@ -53,32 +52,29 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model UserData {
-  user       User        @relation(fields: [userId], references: [id])
-  userId     String      @id @default(cuid())
-  workspaces Workspace[] @relation
-}
-
 model Workspace {
-  id       String    @id @default(cuid())
+  id       String  @id @default(cuid())
   name     String
   userId   String
-  UserData UserData? @relation(fields: [id], references: [userId])
-  boards   Board[]   @relation
+  isDelted Boolean @default(false)
+  boards   Board?
+  user     User    @relation(fields: [userId], references: [email], onDelete: Cascade)
 }
 
 model Board {
   id        String    @id @default(cuid())
   name      String?
+  isDelted  Boolean   @default(false)
   workspace Workspace @relation(fields: [id], references: [id])
-  lists     List[]    @relation
+  lists     List?
 }
 
 model List {
-  id        String     @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String?
-  Board     Board      @relation(fields: [id], references: [id])
-  bookmarks Bookmark[] @relation
+  isDelted  Boolean   @default(false)
+  bookmarks Bookmark?
+  Board     Board     @relation(fields: [id], references: [id])
 }
 
 model Bookmark {
@@ -88,5 +84,6 @@ model Bookmark {
   favicon     String?
   title       String?
   description String?
+  isDelted    Boolean @default(false)
   list        List    @relation(fields: [id], references: [id])
 }

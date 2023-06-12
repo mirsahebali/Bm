@@ -4,10 +4,14 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
-
+import { useQuery } from "@tanstack/react-query";
 export default function Workspaces({ workspaces }: { workspaces: { name: string; id: string }[] }) {
+  const { data: ws } = useQuery({
+    queryKey: ["workspaces"],
+    queryFn: () => console.log("ws"),
+  });
   const [selected, setSelected] = useState(workspaces[0]);
-// const wsName = useAppSelector((state:RootState)=> state)
+  // const wsName = useAppSelector((state:RootState)=> state)
   return (
     <div className="relative w-[130%]">
       <Listbox value={selected} onChange={setSelected}>
@@ -25,7 +29,7 @@ export default function Workspaces({ workspaces }: { workspaces: { name: string;
             leaveTo="opacity-0"
           >
             <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-black dark:text-black dark:bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {workspaces.map((ws:{name:string, id:string}) => (
+              {workspaces.map((ws: { name: string; id: string }) => (
                 <Listbox.Option
                   key={ws.id}
                   className={({ active }) =>

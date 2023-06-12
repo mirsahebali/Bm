@@ -45,47 +45,43 @@ CREATE TABLE "VerificationToken" (
 );
 
 -- CreateTable
-CREATE TABLE "UserData" (
-    "userId" TEXT NOT NULL,
-
-    CONSTRAINT "UserData_pkey" PRIMARY KEY ("userId")
-);
-
--- CreateTable
 CREATE TABLE "Workspace" (
-    "id" TEXT NOT NULL,
+    "wsid" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
 
-    CONSTRAINT "Workspace_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Workspace_pkey" PRIMARY KEY ("wsid")
 );
 
 -- CreateTable
 CREATE TABLE "Board" (
-    "id" TEXT NOT NULL,
-    "name" TEXT,
+    "bid" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
 
-    CONSTRAINT "Board_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Board_pkey" PRIMARY KEY ("bid")
 );
 
 -- CreateTable
 CREATE TABLE "List" (
-    "id" TEXT NOT NULL,
-    "name" TEXT,
+    "lid" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
 
-    CONSTRAINT "List_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "List_pkey" PRIMARY KEY ("lid")
 );
 
 -- CreateTable
 CREATE TABLE "Bookmark" (
-    "id" TEXT NOT NULL,
+    "bmid" TEXT NOT NULL,
     "name" TEXT,
-    "url" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
     "favicon" TEXT,
     "title" TEXT,
     "description" TEXT,
+    "url" TEXT NOT NULL,
 
-    CONSTRAINT "Bookmark_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Bookmark_pkey" PRIMARY KEY ("bmid")
 );
 
 -- CreateIndex
@@ -110,16 +106,13 @@ ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserData" ADD CONSTRAINT "UserData_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Workspace" ADD CONSTRAINT "Workspace_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Workspace" ADD CONSTRAINT "Workspace_id_fkey" FOREIGN KEY ("id") REFERENCES "UserData"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Board" ADD CONSTRAINT "Board_bid_fkey" FOREIGN KEY ("bid") REFERENCES "Workspace"("wsid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Board" ADD CONSTRAINT "Board_id_fkey" FOREIGN KEY ("id") REFERENCES "Workspace"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "List" ADD CONSTRAINT "List_lid_fkey" FOREIGN KEY ("lid") REFERENCES "Board"("bid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "List" ADD CONSTRAINT "List_id_fkey" FOREIGN KEY ("id") REFERENCES "Board"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Bookmark" ADD CONSTRAINT "Bookmark_id_fkey" FOREIGN KEY ("id") REFERENCES "List"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Bookmark" ADD CONSTRAINT "Bookmark_bmid_fkey" FOREIGN KEY ("bmid") REFERENCES "List"("lid") ON DELETE CASCADE ON UPDATE CASCADE;

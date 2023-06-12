@@ -53,37 +53,38 @@ model VerificationToken {
 }
 
 model Workspace {
-  id       String  @id @default(cuid())
-  name     String
-  userId   String
-  isDelted Boolean @default(false)
-  boards   Board?
-  user     User    @relation(fields: [userId], references: [email], onDelete: Cascade)
+  id     String  @id @default(cuid())
+  name   String
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  boards Board[]
 }
 
 model Board {
   id        String    @id @default(cuid())
-  name      String?
-  isDelted  Boolean   @default(false)
-  workspace Workspace @relation(fields: [id], references: [id])
-  lists     List?
+  isDeleted Boolean   @default(false)
+  name      String
+  wsId      String
+  workspace Workspace @relation(fields: [wsId], references: [id], onDelete: Cascade)
+  lists     List[]
 }
 
 model List {
-  id        String    @id @default(cuid())
-  name      String?
-  isDelted  Boolean   @default(false)
-  bookmarks Bookmark?
-  Board     Board     @relation(fields: [id], references: [id])
+  id        String     @id @default(cuid())
+  name      String
+  isDeleted Boolean    @default(false)
+  boardId   String
+  board     Board      @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  bookmarks Bookmark[]
 }
 
 model Bookmark {
   id          String  @id @default(cuid())
   name        String?
-  url         String
-  favicon     String?
   title       String?
+  url         String
   description String?
-  isDelted    Boolean @default(false)
-  list        List    @relation(fields: [id], references: [id])
+  isDeleted   Boolean @default(false)
+  listId      String
+  list        List    @relation(fields: [listId], references: [id], onDelete: Cascade)
 }

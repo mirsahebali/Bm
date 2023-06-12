@@ -20,19 +20,6 @@ export const authOptions: NextAuthOptions = {
       from: process.env.NEXT_PUBLIC_EMAIL_FROM!,
     }),
   ],
-  events: {
-    async signIn(message) {
-      console.log("is new user?", message.isNewUser);
-      console.log("message", message);
-    },
-    async createUser(message) {
-      await prisma.userData.create({
-        data: {
-          userId: message.user.id,
-        },
-      });
-    },
-  },
 };
 
 const handler = NextAuth(authOptions);

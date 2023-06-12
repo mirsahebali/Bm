@@ -11,7 +11,8 @@ const data = await  prisma.workspace.update({
     data:{
    boards:{
         create: [{
-          name: name
+          name: name,
+          isDeleted: false
         }]
       } 
     }

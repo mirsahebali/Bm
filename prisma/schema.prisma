@@ -84,6 +84,7 @@ model Bookmark {
   title       String?
   url         String
   description String?
+  favicon     String?
   isDeleted   Boolean @default(false)
   listId      String
   list        List    @relation(fields: [listId], references: [id], onDelete: Cascade)

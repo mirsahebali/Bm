@@ -4,6 +4,8 @@ import Sidebar from "@/components/sidebar/index";
 import Providers from "./Providers";
 import Workspace from "@/components/workspaces";
 import CreateWorkspace from "@/components/create/workspace";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 export const metadata = {
   title: "Bookmark Manager - Atomic House",
   description: "Created by Mir Saheb Ali",
@@ -12,7 +14,22 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+  const user = await prisma.user.findFirstOrThrow({
+      where: {
+        email: session?.user?.email
+      }
+    })
+
+    const ws = await prisma.workspace.findMany({where: {
+      userId: user?.id
+    }})
+
+ 
   return (
     <html lang="en">
       <head>
@@ -23,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="w-[20%] flex">
             <Sidebar />
             <Navbar />
-            <Workspace />
+            <Workspace workspaces={ws} />
             <CreateWorkspace />
           </div>
           {children}

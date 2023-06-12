@@ -1,17 +1,13 @@
-"use client"
-import { Fragment, useState } from 'react'
-import { Listbox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+"use client";
+import { Fragment, useState } from "react";
+import { Listbox, Transition } from "@headlessui/react";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { useAppSelector } from "@/store/hooks";
+import { RootState } from "@/store/store";
 
-const workspace = [
-  { name: "Workspace 1", $id: 1 },
-  { name: 'New workspace', $id: 2 },
-  { name: 'Workspace 3', $id: 3 },
-]
-
-export default function Example() {
-  const [selected, setSelected] = useState(workspace[0])
-
+export default function Workspaces({ workspaces }: { workspaces: { name: string; id: string }[] }) {
+  const [selected, setSelected] = useState(workspaces[0]);
+// const wsName = useAppSelector((state:RootState)=> state)
   return (
     <div className="relative w-[130%]">
       <Listbox value={selected} onChange={setSelected}>
@@ -19,10 +15,7 @@ export default function Example() {
           <Listbox.Button className="dark:text-black text-white relative w-full cursor-default rounded-lg dark:bg-white bg-black py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
             <span className="block truncate">{selected.name}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-              <ChevronUpDownIcon
-                className="h-5 w-5 text-gray-400"
-                aria-hidden="true"
-              />
+              <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
             </span>
           </Listbox.Button>
           <Transition
@@ -32,12 +25,12 @@ export default function Example() {
             leaveTo="opacity-0"
           >
             <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-black dark:text-black dark:bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {workspace.map((ws) => (
+              {workspaces.map((ws:{name:string, id:string}) => (
                 <Listbox.Option
-                  key={ws.$id}
+                  key={ws.id}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 dark:text-black text-white ${
-                      active ? 'bg-slate-600 text-sky-50' : 'text-gray-900'
+                      active ? "bg-slate-600 text-sky-50" : "text-gray-900"
                     }`
                   }
                   value={ws}
@@ -45,9 +38,7 @@ export default function Example() {
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${
-                          selected ? 'font-medium' : 'font-normal'
-                        }`}
+                        className={`block truncate ${selected ? "font-medium" : "font-normal"}`}
                       >
                         {ws.name}
                       </span>
@@ -65,6 +56,5 @@ export default function Example() {
         </div>
       </Listbox>
     </div>
-  )
+  );
 }
-

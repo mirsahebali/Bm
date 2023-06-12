@@ -1,11 +1,16 @@
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { FormEvent, Fragment, useState } from "react";
 import { Input } from "@chakra-ui/react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { PrismaClient } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { setName as setWsName } from "@/features/workspaceSlice";
+import { useAppDispatch } from "@/store/hooks";
 export default function CreateWorkspace() {
-  let [isOpen, setIsOpen] = useState(false);
+  const {data:session} = useSession()
+  const dispatch = useAppDispatch()
+  
+ let [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   function closeModal() {
     setIsOpen(false);
@@ -57,30 +62,30 @@ export default function CreateWorkspace() {
                     Create Workspace
                   </Dialog.Title>
                   <div className="mt-2">
-                    <form action="" method="post">
+                    <form action="" method="post" >
                       <Input
                         color={"black"}
                         placeholder="Workspace Name"
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => dispatch(setWsName(e.target.value))}
                       />
                     </form>
-                  </div>
 
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={closeModal}
-                    >
-                      Add
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={closeModal}
-                    >
-                      Cancel
-                    </button>
+                    <div className="mt-4">
+                      <button
+                        type="submit"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      >
+                        Add
+                      </button>
+
+                      <button
+                        type="button"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={closeModal}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -91,4 +96,3 @@ export default function CreateWorkspace() {
     </>
   );
 }
-

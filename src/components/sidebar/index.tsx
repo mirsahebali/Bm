@@ -11,9 +11,7 @@ import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
 export default function Sidebar() {
   const { data: session } = useSession();
-  console.log(session);
-const theme = useAppSelector((store: RootState)=> store.theme)
-  
+  const theme = useAppSelector((store: RootState) => store.theme);
 
   return (
     <div className=" mr-3 my-2 p-10 rounded-r-xl h-screen flex flex-col items-center dark:bg-[#064663] ">
@@ -22,7 +20,12 @@ const theme = useAppSelector((store: RootState)=> store.theme)
         {/* <SvgLogo/> */}
         <div className="flex justify-center ">
           <Link href={`https://atomichouse.co`} target="_blank">
-            <Image src={theme.theme === "dark"? LightSvgLogo : DarkSvgLogo} alt="logo" height={40} width={40} />
+            <Image
+              src={theme.theme === "dark" ? LightSvgLogo : DarkSvgLogo}
+              alt="logo"
+              height={40}
+              width={40}
+            />
           </Link>
         </div>
 
@@ -32,7 +35,6 @@ const theme = useAppSelector((store: RootState)=> store.theme)
             {session.user?.name}{" "}
           </div>
         ) : (
-
           <Button type="login" />
         )}
       </div>
@@ -41,7 +43,6 @@ const theme = useAppSelector((store: RootState)=> store.theme)
       <div>
         <Accordion />
       </div>
-
     </div>
   );
 }

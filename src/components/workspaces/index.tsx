@@ -6,9 +6,19 @@ import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
 import { useQuery } from "@tanstack/react-query";
 export default function Workspaces({ workspaces }: { workspaces: { name: string; id: string }[] }) {
-  const { data: ws } = useQuery({
+  const {
+    data: ws,
+    isError,
+    error,
+    isLoading,
+  } = useQuery({
     queryKey: ["workspaces"],
-    queryFn: () => console.log("ws"),
+    queryFn: async () => {
+      const res = await fetch("http://localhost:3000/api/read/ws", {
+        method: "GET",
+      });
+      const data = await res.json();
+    },
   });
   const [selected, setSelected] = useState(workspaces[0]);
   // const wsName = useAppSelector((state:RootState)=> state)

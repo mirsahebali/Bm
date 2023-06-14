@@ -25,6 +25,7 @@ export default function CreateWorkspace({ user }: { user: string }) {
       headers: {
         "Content-Type": "application/json",
       },
+     
     });
   }
   return (

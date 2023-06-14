@@ -6,6 +6,8 @@ import Workspace from "@/components/workspaces";
 import CreateWorkspace from "@/components/create/workspace";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
+import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
 export const metadata = {
   title: "Bookmark Manager - Atomic House",
   description: "Created by Mir Saheb Ali",
@@ -14,7 +16,7 @@ export const metadata = {
   },
 };
 
-import { PrismaClient } from "@prisma/client";
+
 const prisma = new PrismaClient();
 
 export default async function RootLayout({
@@ -48,13 +50,18 @@ export default async function RootLayout({
       email: session?.user?.email,
     },
   });
-
+  if (!user) {
+    
+  NextResponse.redirect("/api/auth/signin");
+  }
+  async function getWorkspace(){
   const ws = await prisma.workspace.findMany({
     where: {
       userId: user?.id,
     },
   });
-
+    return ws
+  }
   return (
     <html lang="en">
       <head>
@@ -67,7 +74,7 @@ export default async function RootLayout({
           <div className="w-[20%] flex">
             <Sidebar />
             <Navbar />
-            <Workspace workspaces={ws} />
+            <Workspace workspaces={await getWorkspace()} />
             <CreateWorkspace user={user.id} />
           </div>
           {children}

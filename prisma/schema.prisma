@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("NEXT_PUBLIC_DATABASE_URL")
-  // directUrl = env("NEXT_PUBLIC_DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("NEXT_PUBLIC_DATABASE_URL")
+  directUrl = env("NEXT_PUBLIC_DIRECT_DATABASE_URL")
 }
 
 model Account {
@@ -40,6 +40,7 @@ model User {
   email         String?     @unique
   emailVerified DateTime?
   image         String?
+  defaultWs     String?
   accounts      Account[]
   sessions      Session[]
   workspaces    Workspace[]
@@ -54,39 +55,40 @@ model VerificationToken {
 }
 
 model Workspace {
-  id     String  @id @default(cuid())
   name   String
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+  id     String  @id @default(cuid())
+  email  String?
   boards Board[]
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Board {
+  name      String
   id        String    @id @default(cuid())
   isDeleted Boolean   @default(false)
-  name      String
   wsId      String
   workspace Workspace @relation(fields: [wsId], references: [id], onDelete: Cascade)
   lists     List[]
 }
 
 model List {
-  id        String     @id @default(cuid())
   name      String
+  id        String     @id @default(cuid())
   isDeleted Boolean    @default(false)
   boardId   String
-  board     Board      @relation(fields: [boardId], references: [id], onDelete: Cascade)
   bookmarks Bookmark[]
+  board     Board      @relation(fields: [boardId], references: [id], onDelete: Cascade)
 }
 
 model Bookmark {
-  id          String  @id @default(cuid())
   name        String?
   title       String?
-  url         String
   description String?
-  favicon     String?
+  url         String
+  id          String  @id @default(cuid())
   isDeleted   Boolean @default(false)
   listId      String
+  favicon     String?
   list        List    @relation(fields: [listId], references: [id], onDelete: Cascade)
 }

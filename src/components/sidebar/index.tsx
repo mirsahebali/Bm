@@ -1,7 +1,6 @@
 "use client";
 import Toggle from "./components/Toggle";
-import Accordion from "./components/Accordion";
-import { useSession } from "next-auth/react";
+import Boards from "./components/Boards";
 import Button from "./components/Button";
 import DarkSvgLogo from "@/../public/Svg-01.svg";
 import LightSvgLogo from "@/../public/Svg-02.svg";
@@ -9,8 +8,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
-export default function Sidebar() {
-  const { data: session } = useSession();
+import CreateBoard from "../create/boards";
+import { Session } from "next-auth";
+export default function Sidebar({ session }: { session: Session | null }) {
   const theme = useAppSelector((store: RootState) => store.theme);
 
   return (
@@ -41,7 +41,8 @@ export default function Sidebar() {
       <div className="text-4xl font-bold my-10 dark:text-white">Manager</div>
       <div className="w-full h-[1px]  bg-gray-600"></div>
       <div>
-        <Accordion />
+        <Boards />
+        <CreateBoard />
       </div>
     </div>
   );

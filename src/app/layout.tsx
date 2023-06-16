@@ -6,8 +6,9 @@ import Workspace from "@/components/workspaces";
 import CreateWorkspace from "@/components/create/workspace";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { DeleteWorkspace } from "@/components/workspaces/components/Delete";
+import prisma from "@/lib/prisma";
 export const metadata = {
   title: "Bookmark Manager - Atomic House",
   description: "Created by Mir Saheb Ali",
@@ -16,9 +17,6 @@ export const metadata = {
   },
 };
 
-
-const prisma = new PrismaClient();
-
 export default async function RootLayout({
   children,
 }: {
@@ -26,6 +24,7 @@ export default async function RootLayout({
 }) {
   const session = await getServerSession(authOptions);
   if (!session) {
+    NextResponse.redirect("http://localhost:3000");
     return (
       <html lang="en">
         <head>
@@ -36,7 +35,8 @@ export default async function RootLayout({
         >
           <Providers>
             <div className="w-[20%] flex">
-              <Sidebar />
+              <Sidebar session={session} />
+
               <Navbar />
             </div>
             {children}
@@ -45,23 +45,7 @@ export default async function RootLayout({
       </html>
     );
   }
-  const user = await prisma.user.findFirstOrThrow({
-    where: {
-      email: session?.user?.email,
-    },
-  });
-  if (!user) {
-    
-  NextResponse.redirect("/api/auth/signin");
-  }
-  async function getWorkspace(){
-  const ws = await prisma.workspace.findMany({
-    where: {
-      userId: user?.id,
-    },
-  });
-    return ws
-  }
+
   return (
     <html lang="en">
       <head>
@@ -72,10 +56,11 @@ export default async function RootLayout({
       >
         <Providers>
           <div className="w-[20%] flex">
-            <Sidebar />
+            <Sidebar session={session} />
             <Navbar />
-            <Workspace workspaces={await getWorkspace()} />
-            <CreateWorkspace user={user.id} />
+            <Workspace />
+            <CreateWorkspace />
+            <DeleteWorkspace />
           </div>
           {children}
         </Providers>

@@ -2,8 +2,10 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, SyntheticEvent, useState } from "react";
 import { Input } from "@chakra-ui/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-export default function CreateWorkspace() {
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAppSelector } from "@/store/hooks";
+export default function CreateBoard() {
+  const wsId = useAppSelector((state) => state.workspace.id);
   const queryClient = useQueryClient();
   let [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
@@ -14,24 +16,26 @@ export default function CreateWorkspace() {
   function openModal() {
     setIsOpen(true);
   }
-  const { refetch } = useQuery({
-    queryKey: ["workspaces"],
-  });
-  const createWorkspaceMutation = useMutation({
-    mutationKey: ["create ws"],
+  console.log("wsId from boards", wsId);
+
+  const createBoardMutation = useMutation({
+    mutationKey: ["create board"],
     mutationFn: async (e: SyntheticEvent) => {
       e.preventDefault();
-      await fetch(`http://localhost:3000/api/ws/create/${name}`, {
+      await fetch(`http://localhost:3000/api/boards/create/${wsId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          name: name,
+        }),
       });
     },
     onSuccess: () => {
       setIsOpen(false);
-      queryClient.invalidateQueries(["workspaces"]);
-      refetch();
+      queryClient.refetchQueries(["boards"]);
+      queryClient.invalidateQueries(["boards"]);
     },
   });
   return (
@@ -76,18 +80,19 @@ export default function CreateWorkspace() {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Create Workspace
+                    Create a board
                   </Dialog.Title>
                   <div className="mt-2">
                     <form
-                      action=""
                       method="post"
-                      onSubmit={createWorkspaceMutation.mutateAsync}
+                      onSubmit={createBoardMutation.mutateAsync}
                     >
                       <Input
                         color={"black"}
-                        placeholder="Workspace Name"
+                        placeholder="add board"
                         onChange={(e) => setName(e.target.value)}
+                        name="name"
+                        id="name"
                       />
 
                       <div className="mt-4">

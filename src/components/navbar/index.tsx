@@ -5,10 +5,9 @@ import Image from "next/image";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { AiOutlineLogin, AiOutlineLogout } from "react-icons/ai";
-import { MdDeleteSweep } from "react-icons/md";
 import { FiTrash2 } from "react-icons/fi";
 import { CircularProgress } from "@chakra-ui/react";
-import { DeleteWorkspace } from "../workspaces/components/Delete";
+import Link from "next/link";
 export default function Navbar() {
   const { data: session, status } = useSession();
   if (status === "loading") {
@@ -62,9 +61,11 @@ export default function Navbar() {
             <div className="px-1 py-1">
               <Menu.Item>
                 {({ active }) => (
-                  <button
-                    className={`${active ? "bg-red-500 text-white" : "text-gray-900"
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  <Link
+                    href={`/trash/boards`}
+                    className={`${
+                      active ? "bg-red-500 text-white" : "text-gray-900"
+                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   >
                     {active ? (
                       <FiTrash2 className="mr-2 h-5 w-5 text-gray-50" />
@@ -72,7 +73,7 @@ export default function Navbar() {
                       <FiTrash2 className="mr-2 h-5 w-5 text-red-400" />
                     )}
                     Trash Bin
-                  </button>
+                  </Link>
                 )}
               </Menu.Item>
             </div>
@@ -81,8 +82,9 @@ export default function Navbar() {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    className={`${active ? "bg-blue-500 text-white" : "text-gray-900"
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    className={`${
+                      active ? "bg-blue-500 text-white" : "text-gray-900"
+                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                     onClick={() => (session ? signOut() : signIn())}
                   >
                     {session ? (

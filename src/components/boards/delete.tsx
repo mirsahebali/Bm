@@ -1,23 +1,26 @@
 "use client";
 import { useAppSelector } from "@/store/hooks";
 import { Dialog, Transition } from "@headlessui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment, SyntheticEvent, useState } from "react";
 
-export function DeleteWorkspace() {
+export function DeleteBoard() {
   let [isOpen, setIsOpen] = useState(false);
-  const wsId = useAppSelector((state) => state.workspace.id);
+  const boardId = useAppSelector((state) => state.board.id);
+  console.log(boardId);
+
   const queryClient = useQueryClient();
-  const deleteWsMutation = useMutation({
+  const { refetch } = useQuery(["boards"]);
+  const moveBoardToTrash = useMutation({
     mutationFn: async (e: SyntheticEvent) => {
-      await fetch(`http://localhost:3000/api/delete/ws/${wsId}`, {
+      await fetch(`http://localhost:3000/api/boards/delete/${boardId}`, {
         cache: "no-store",
       });
     },
     onSuccess: () => {
       setIsOpen(false);
-      queryClient.refetchQueries(["workspaces"]);
       queryClient.invalidateQueries(["workspaces"]);
+      refetch();
     },
   });
   function closeModal() {
@@ -29,7 +32,7 @@ export function DeleteWorkspace() {
   }
 
   return (
-    <div>
+    <div className="m-5">
       <div className="relative right-0 inset-0 ">
         <button
           type="button"
@@ -70,7 +73,7 @@ export function DeleteWorkspace() {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Are you sure you want to delete?
+                    Are you sure you want to move board to trash?
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500"></p>
@@ -80,7 +83,7 @@ export function DeleteWorkspace() {
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
-                      onClick={deleteWsMutation.mutateAsync}
+                      onClick={moveBoardToTrash.mutateAsync}
                     >
                       Confirm
                     </button>

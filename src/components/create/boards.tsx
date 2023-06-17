@@ -2,7 +2,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, SyntheticEvent, useState } from "react";
 import { Input } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAppSelector } from "@/store/hooks";
 export default function CreateBoard() {
   const wsId = useAppSelector((state) => state.workspace.id);
@@ -16,26 +16,33 @@ export default function CreateBoard() {
   function openModal() {
     setIsOpen(true);
   }
-  console.log("wsId from boards", wsId);
-
+  const { refetch } = useQuery(["boards"]);
   const createBoardMutation = useMutation({
     mutationKey: ["create board"],
     mutationFn: async (e: SyntheticEvent) => {
       e.preventDefault();
-      await fetch(`http://localhost:3000/api/boards/create/${wsId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: name,
-        }),
-      });
+      const data = await fetch(
+        `http://localhost:3000/api/boards/create/${wsId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: name,
+          }),
+        }
+      );
+      return await data.text();
     },
     onSuccess: () => {
       setIsOpen(false);
-      queryClient.refetchQueries(["boards"]);
       queryClient.invalidateQueries(["boards"]);
+      refetch();
+      console.log("Successfully created board with ws id: %s", wsId);
+    },
+    onError: () => {
+      console.log("Failed to create board with ws id: %s", wsId);
     },
   });
   return (

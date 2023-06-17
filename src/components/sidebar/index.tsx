@@ -10,6 +10,7 @@ import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store/store";
 import CreateBoard from "../create/boards";
 import { Session } from "next-auth";
+import { DeleteBoard } from "../boards/delete";
 export default function Sidebar({ session }: { session: Session | null }) {
   const theme = useAppSelector((store: RootState) => store.theme);
 
@@ -38,11 +39,16 @@ export default function Sidebar({ session }: { session: Session | null }) {
           <Button type="login" />
         )}
       </div>
-      <div className="text-4xl font-bold my-10 dark:text-white">Manager</div>
+      <Link href={`/`} className="text-4xl font-bold my-10 dark:text-white">
+        Manager
+      </Link>
       <div className="w-full h-[1px]  bg-gray-600"></div>
       <div>
         <Boards />
         <CreateBoard />
+      </div>
+      <div className="absolute bottom-0">
+        <DeleteBoard />
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
 import { NextResponse, NextRequest } from "next/server";
+import prisma from "@/lib/prisma";
 export async function POST(req: NextRequest, res: NextResponse) {
   const id = req.nextUrl.pathname;
   const WsId = id.replace("/api/boards/create/", "");
   const r = await req.json();
-
-  await prisma.workspace.update({
+  const data = await prisma.workspace.update({
     where: {
       id: WsId,
     },
@@ -18,5 +18,5 @@ export async function POST(req: NextRequest, res: NextResponse) {
     },
   });
 
-  return NextResponse.json(r);
+  return NextResponse.json({ data, r });
 }

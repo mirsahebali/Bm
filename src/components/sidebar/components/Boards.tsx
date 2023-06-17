@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   Accordion,
   AccordionItem,
@@ -11,9 +11,15 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import {
+  setName as setBoardName,
+  setId as setBoardId,
+  setArray as setWsArray,
+} from "@/features/boardSlice";
 export default function Page() {
   const wsId = useAppSelector((state) => state.workspace.id);
 
+  const dispatch = useAppDispatch();
   const {
     data: boards,
     isError,
@@ -32,20 +38,20 @@ export default function Page() {
       return data;
     },
   });
-
   useEffect(() => {
     refetch();
   }, [wsId, refetch]);
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  if (!wsId) {
+  if (!wsId || wsId === null || wsId === "") {
     return <div>Select a workspace</div>;
   }
   if (isError || isLoadingError) {
     console.error(error);
     refetch();
   }
+  dispatch(setWsArray(boards?.data));
   return (
     <Accordion allowToggle>
       <AccordionItem border={"none"}>
@@ -60,13 +66,19 @@ export default function Page() {
           </AccordionButton>
         </h2>
         <AccordionPanel>
-          {boards?.data?.map((board: { id: string; name: string }) => {
-            return (
-              <div key={board.id} className="cursor-pointer p-2 m-1">
-                {board.name}
-              </div>
-            );
-          })}
+          {boards?.data
+            ?.filter((data: { isDeleted: boolean }) => !data.isDeleted)
+            .map((board: { id: string; name: string }) => {
+              return (
+                <div
+                  key={board.id}
+                  onClick={() => dispatch(setBoardId(board.id))}
+                  className="cursor-pointer p-2 m-1"
+                >
+                  {board.name}
+                </div>
+              );
+            })}
         </AccordionPanel>
       </AccordionItem>
     </Accordion>

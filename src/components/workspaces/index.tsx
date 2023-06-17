@@ -2,7 +2,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { setID as setWSId } from "@/features/workspaceSlice";
 export default function Workspaces() {
@@ -29,11 +29,11 @@ export default function Workspaces() {
   );
   useEffect(() => {
     dispatch(setWSId(selected.id));
-  }, [selected, dispatch]);
+    refetch();
+  }, [selected, dispatch, refetch]);
 
   if (isError || isLoadingError) {
     console.error(error);
-    refetch();
   }
   if (isLoading) {
     return <div>Is loading...</div>;
@@ -63,8 +63,7 @@ export default function Workspaces() {
                 <Listbox.Option
                   key={ws.id}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 dark:text-black text-white ${
-                      active ? "bg-slate-600 text-sky-50" : "text-gray-900"
+                    `relative cursor-default select-none py-2 pl-10 pr-4 dark:text-black text-white ${active ? "bg-slate-600 text-sky-50" : "text-gray-900"
                     }`
                   }
                   value={ws}
@@ -72,9 +71,8 @@ export default function Workspaces() {
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${
-                          selected ? "font-medium" : "font-normal"
-                        }`}
+                        className={`block truncate ${selected ? "font-medium" : "font-normal"
+                          }`}
                       >
                         {ws.name}
                       </span>

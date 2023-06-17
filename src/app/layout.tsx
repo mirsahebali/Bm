@@ -8,6 +8,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 import { DeleteWorkspace } from "@/components/workspaces/components/Delete";
+import Trash from "@/components/popover/trash";
 import prisma from "@/lib/prisma";
 export const metadata = {
   title: "Bookmark Manager - Atomic House",
@@ -61,6 +62,7 @@ export default async function RootLayout({
             <Workspace />
             <CreateWorkspace />
             <DeleteWorkspace />
+            <Trash />
           </div>
           {children}
         </Providers>

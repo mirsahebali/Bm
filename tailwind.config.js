@@ -17,3 +17,11 @@ module.exports = {
   darkMode: "class",
   plugins: [],
 };
+
+// Your selected colors:
+//
+//     Primary: #f7f6ed (RGB: 247, 246, 237)
+//     Secondary: #0b0a05 (RGB: 11, 10, 5)
+//     Primary Button: #7c86c5 (RGB: 124, 134, 197)
+//     Secondary Button: #19170b (RGB: 25, 23, 11)
+//     Accent: #7c86c5 (RGB: 124, 134, 197)

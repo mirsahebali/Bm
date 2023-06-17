@@ -12,22 +12,20 @@ export async function POST(
   if (!session) {
     NextResponse.redirect("http://localhost:3000/api/auth/login");
   }
-  const data = await prisma.user
-    .update({
-      where: {
-        email: session?.user?.email!,
+  const data = await prisma.user.update({
+    where: {
+      email: session?.user?.email!,
+    },
+    data: {
+      workspaces: {
+        create: [
+          {
+            name: name,
+            email: session?.user?.email!,
+          },
+        ],
       },
-      data: {
-        workspaces: {
-          create: [
-            {
-              name: name,
-              email: session?.user?.email!,
-            },
-          ],
-        },
-      },
-    })
-    .then(() => alert("Workspace created"));
+    },
+  });
   return new Response(JSON.stringify(data));
 }

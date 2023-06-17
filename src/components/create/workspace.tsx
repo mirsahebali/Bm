@@ -36,7 +36,7 @@ export default function CreateWorkspace() {
   });
   return (
     <>
-      <div className="inset-0 flex items-center h-fit">
+      <div className="inset-0 flex items-center h-fit mt-1">
         <button
           type="button"
           onClick={openModal}

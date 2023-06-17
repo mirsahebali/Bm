@@ -3,12 +3,14 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
 export const revalidate = true;
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(
+  req: NextRequest,
+  context: { params: { email: string } }
+) {
   const session = await getServerSession(authOptions);
   if (!session) {
-    throw new Error("Unauthorized?hello?");
+    return NextResponse.json("Unauthorized");
   }
-
   const data = await prisma.workspace.findMany({
     where: {
       email: session?.user?.email,

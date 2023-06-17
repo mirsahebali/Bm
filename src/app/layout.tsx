@@ -9,7 +9,7 @@ import { authOptions } from "./api/auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 import { DeleteWorkspace } from "@/components/workspaces/components/Delete";
 import Trash from "@/components/popover/trash";
-import prisma from "@/lib/prisma";
+import Search from "@/components/slide_up/search";
 export const metadata = {
   title: "Bookmark Manager - Atomic House",
   description: "Created by Mir Saheb Ali",
@@ -58,11 +58,14 @@ export default async function RootLayout({
         <Providers>
           <div className="w-[20%] flex">
             <Sidebar session={session} />
-            <Navbar />
             <Workspace />
             <CreateWorkspace />
             <DeleteWorkspace />
             <Trash />
+            <Navbar />
+            <div className="">
+              <Search />
+            </div>
           </div>
           {children}
         </Providers>

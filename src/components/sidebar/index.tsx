@@ -11,7 +11,11 @@ import { RootState } from "@/store/store";
 import CreateBoard from "../create/boards";
 import { Session } from "next-auth";
 import { DeleteBoard } from "../boards/delete";
-export default function Sidebar({ session }: { session: Session | null }) {
+export default function Sidebar({
+  session,
+}: {
+  session: Session | null | undefined;
+}) {
   const theme = useAppSelector((store: RootState) => store.theme);
 
   return (

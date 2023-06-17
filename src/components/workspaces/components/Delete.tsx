@@ -10,7 +10,7 @@ export function DeleteWorkspace() {
   const queryClient = useQueryClient();
   const deleteWsMutation = useMutation({
     mutationFn: async (e: SyntheticEvent) => {
-      await fetch(`http://localhost:3000/api/delete/ws/${wsId}`, {
+      await fetch(`http://localhost:3000/api/ws/delete/${wsId}`, {
         cache: "no-store",
       });
     },
@@ -30,7 +30,7 @@ export function DeleteWorkspace() {
 
   return (
     <div>
-      <div className="relative right-0 inset-0 ">
+      <div className="relative right-0 inset-0 mt-1">
         <button
           type="button"
           onClick={openModal}

@@ -17,7 +17,7 @@ export default function Workspaces() {
   } = useQuery({
     queryKey: ["workspaces"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:3000/api/ws/read", {
+      const res = await fetch(`http://localhost:3000/api/ws/read`, {
         method: "GET",
       });
       const data = await res.json();
@@ -59,11 +59,12 @@ export default function Workspaces() {
             leaveTo="opacity-0"
           >
             <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-black dark:text-black dark:bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {wsData?.data.map((ws: { name: string; id: string }) => (
+              {wsData?.data?.map((ws: { name: string; id: string }) => (
                 <Listbox.Option
                   key={ws.id}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 dark:text-black text-white ${active ? "bg-slate-600 text-sky-50" : "text-gray-900"
+                    `relative cursor-default select-none py-2 pl-10 pr-4 dark:text-black text-white ${
+                      active ? "bg-slate-600 text-sky-50" : "text-gray-900"
                     }`
                   }
                   value={ws}
@@ -71,8 +72,9 @@ export default function Workspaces() {
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${selected ? "font-medium" : "font-normal"
-                          }`}
+                        className={`block truncate ${
+                          selected ? "font-medium" : "font-normal"
+                        }`}
                       >
                         {ws.name}
                       </span>

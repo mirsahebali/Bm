@@ -30,6 +30,9 @@ export default function Page() {
   } = useQuery({
     queryKey: ["boards"],
     queryFn: async () => {
+      if (wsId === null || wsId === "") {
+        return null;
+      }
       const res = await fetch(`http://localhost:3000/api/boards/read/${wsId}`, {
         method: "GET",
         cache: "no-store",
@@ -44,7 +47,7 @@ export default function Page() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  if (!wsId || wsId === null || wsId === "") {
+  if (!wsId || wsId === null || wsId === "" || boards?.data === null) {
     return <div>Select a workspace</div>;
   }
   if (isError || isLoadingError) {
@@ -72,7 +75,10 @@ export default function Page() {
               return (
                 <div
                   key={board.id}
-                  onClick={() => dispatch(setBoardId(board.id))}
+                  onClick={() => {
+                    dispatch(setBoardId(board.id));
+                    dispatch(setBoardName(board.name));
+                  }}
                   className="cursor-pointer p-2 m-1"
                 >
                   {board.name}

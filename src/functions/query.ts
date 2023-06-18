@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useFetchData(category: string, fetchUrl: string) {
+  const queryClient = useQueryClient();
   const {
     data,
     error,

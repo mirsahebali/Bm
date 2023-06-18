@@ -5,6 +5,7 @@ import { useAppSelector } from "@/store/hooks";
 import { useState, SyntheticEvent, useEffect, FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFetchData } from "@/functions/query";
+import { useCreateData } from "@/functions/mutation";
 export default function Page() {
   const boardId = useAppSelector((state) => state.board.id);
   const boardName = useAppSelector((state) => state.board.name);
@@ -19,41 +20,12 @@ export default function Page() {
     error,
     refetch,
   } = useFetchData("lists", `lists/read/${boardId}`);
-  const createListMutation = useMutation({
-    mutationKey: ["create list"],
-    mutationFn: async (e: FormEvent) => {
-      e.preventDefault();
-      const data = await fetch(
-        `http://localhost:3000/api/lists/create/${boardId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: name,
-          }),
-        }
-      );
-      return await data.text();
-    },
-    onSuccess: () => {
-      refetch();
-      queryClient.invalidateQueries(["lists"]);
-      console.log("Successfully created list with board id: %s", boardId);
-    },
-    onError: () => {
-      console.log("Failed to create list with board id: %s", boardId);
-    },
-  });
-
-  if (isError) {
+  const createListMutate = useCreateData("create list", `lists/create/${boardId}`, name, "lists");
+  if (isError || isLoadingError) {
     console.error(error);
   }
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center">Loading lists....</div>
-    );
+    return <div className="flex justify-center items-center">Loading lists....</div>;
   }
   if (isSuccess) {
     console.log(lists?.data);
@@ -65,17 +37,14 @@ export default function Page() {
             <div>{boardName}</div>
             {lists?.data?.map((list: { name: string; id: string }) => {
               return (
-                <Tab
-                  key={list.id}
-                  className={`text-2xl hover:text-black dark:text-white`}
-                >
+                <Tab key={list.id} className={`text-2xl hover:text-black dark:text-white`}>
                   {list.name}
                 </Tab>
               );
             })}
           </Tab.List>
         </Tab.Group>
-        <form onSubmit={createListMutation.mutateAsync}>
+        <form onSubmit={createListMutate.mutateAsync}>
           {" "}
           <Input
             placeholder="create list"

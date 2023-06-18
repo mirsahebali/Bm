@@ -17,7 +17,6 @@ export const metadata = {
     icon: "../../public/favicon.ico",
   },
 };
-
 export default async function RootLayout({
   children,
 }: {

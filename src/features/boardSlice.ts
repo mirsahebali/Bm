@@ -5,11 +5,21 @@ interface InitialState {
   name: string;
   id: string;
   array: any[];
+  obj: {
+    name: string;
+    id: string;
+    array: any[];
+  }
 }
 const initialState: InitialState = {
   name: "",
   id: "",
   array: [],
+  obj: {
+    name: "",
+    id: "",
+    array: [],
+  }
 };
 
 const boardSlice = createSlice({
@@ -25,9 +35,12 @@ const boardSlice = createSlice({
     setArray: (state, action: PayloadAction<any[]>) => {
       state.array = action.payload;
     },
+    setObj: (state, action: PayloadAction<any>) => {
+      state.obj = action.payload;
+    }
   },
 } as CreateSliceOptions<InitialState>);
 
-export const { setName, setId, setArray } = boardSlice.actions;
+export const { setName, setId, setArray, setObj } = boardSlice.actions;
 
 export default boardSlice.reducer;

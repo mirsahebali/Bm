@@ -3,7 +3,7 @@ import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar/index";
 import Providers from "./Providers";
 import Workspace from "@/components/workspaces";
-import CreateWorkspace from "@/components/create/workspace";
+import CreateWorkspace from "@/components/create/components/create";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
@@ -17,11 +17,7 @@ export const metadata = {
     icon: "../../public/favicon.ico",
   },
 };
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
   if (!session) {
     NextResponse.redirect("http://localhost:3000");
@@ -30,9 +26,7 @@ export default async function RootLayout({
         <head>
           <link rel="icon" href="/favicon.ico" sizes="any" />
         </head>
-        <body
-          className={`flex dark:bg-[#041C32] ease-in-out duration-300 dark:text-white`}
-        >
+        <body className={`flex dark:bg-[#041C32] ease-in-out duration-300 dark:text-white`}>
           <Providers>
             <div className="w-[20%] flex">
               <Sidebar session={session} />
@@ -45,28 +39,32 @@ export default async function RootLayout({
       </html>
     );
   }
-
+  
   return (
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body
-        className={`flex dark:bg-[#041C32] ease-in-out duration-300 dark:text-white`}
-      >
+      <body className={`flex dark:bg-[#041C32] ease-in-out duration-300 dark:text-white`}>
         <Providers>
           <div className="w-[20%] flex">
             <Sidebar session={session} />
-            <Workspace />
-            <CreateWorkspace />
+            <Workspace user={session.user?.email!}/>
+            <CreateWorkspace
+              category="workspace"
+              mutationKey="Create Workspace"
+              parentId={"workspace"}
+            />
             <DeleteWorkspace />
             <Trash />
             <Navbar />
             <div className="">
               <Search />
+
             </div>
           </div>
           {children}
+
         </Providers>
       </body>
     </html>

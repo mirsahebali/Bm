@@ -6,8 +6,7 @@ export async function POST(
   request: NextRequest,
   context: { params: { data: string[] } }
 ) {
-  const [name] = context.params.data;
-
+const n = await request.json()
   const session = await getServerSession(authOptions);
   if (!session) {
     NextResponse.redirect("http://localhost:3000/api/auth/login");
@@ -20,7 +19,7 @@ export async function POST(
       workspaces: {
         create: [
           {
-            name: name,
+            name: n.name,
             email: session?.user?.email!,
           },
         ],

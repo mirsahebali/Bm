@@ -2,10 +2,11 @@
 import { Fragment, useEffect, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { setID as setWSId } from "@/features/workspaceSlice";
-export default function Workspaces() {
+export default function Workspaces({ user }: { user: string }) {
+  const wsId = useAppSelector((state) => state.workspace.id);
   const dispatch = useAppDispatch();
   const {
     data: wsData,
@@ -17,20 +18,18 @@ export default function Workspaces() {
   } = useQuery({
     queryKey: ["workspaces"],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:3000/api/ws/read`, {
+      const res = await fetch(`http://localhost:3000/api/workspace/read`, {
         method: "GET",
       });
       const data = await res.json();
       return data;
     },
   });
-  const [selected, setSelected] = useState(
-    wsData ? wsData[0] : { name: "Select a workspace", id: "none" }
-  );
+  const [selected, setSelected] = useState({ name: "select a workspace", id: "jsdfkja" });
   useEffect(() => {
     dispatch(setWSId(selected.id));
     refetch();
-  }, [selected, dispatch, refetch]);
+  }, [selected,wsId]);
 
   if (isError || isLoadingError) {
     console.error(error);
@@ -38,18 +37,19 @@ export default function Workspaces() {
   if (isLoading) {
     return <div>Is loading...</div>;
   }
+  // setSelected(setDefaultWs?.data?.data)
 
   return (
     <div className="relative w-[130%]">
-      <Listbox value={selected} onChange={setSelected}>
+      <Listbox
+        value={selected}
+        onChange={setSelected}
+      >
         <div className="relative mt-1">
           <Listbox.Button className="dark:text-black text-white relative w-full cursor-default rounded-lg dark:bg-white bg-black py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-            <span className="block truncate">{selected.name}</span>
+            <span className="block truncate">{selected?.name}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-              <ChevronUpDownIcon
-                className="h-5 w-5 text-gray-400"
-                aria-hidden="true"
-              />
+              <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
             </span>
           </Listbox.Button>
           <Transition
@@ -72,9 +72,7 @@ export default function Workspaces() {
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${
-                          selected ? "font-medium" : "font-normal"
-                        }`}
+                        className={`block truncate ${selected ? "font-medium" : "font-normal"}`}
                       >
                         {ws.name}
                       </span>

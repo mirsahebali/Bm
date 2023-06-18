@@ -40,3 +40,20 @@ export function useCreateData(
     reset,
   };
 }
+export function useSetDefaultWs(id: string, email: string) {
+  const queryClient = useQueryClient();
+  const { mutate, mutateAsync, data, isSuccess, isError, isLoading, error } = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`http://localhost:3000/api/user/default/workspace/${email}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      });
+      return await res.json();
+    },
+    onSuccess: () => queryClient.invalidateQueries(["default_ws"]),
+  });
+  return { mutate, data, mutateAsync, isSuccess, isError, isLoading, error };
+}

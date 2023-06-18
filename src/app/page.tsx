@@ -1,14 +1,17 @@
 "use client";
 import { Tab } from "@headlessui/react";
 import { Input, Button } from "@chakra-ui/react";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useState, SyntheticEvent, useEffect, FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFetchData } from "@/functions/query";
 import { useCreateData } from "@/functions/mutation";
+import { setId as setListId } from "@/features/listSlice";
+import { BsPlusSquareDotted } from "react-icons/bs";
+import Create from "@/components/create/components/create";
 export default function Page() {
-  const boardId = useAppSelector((state) => state.board.id);
-  const boardName = useAppSelector((state) => state.board.name);
+  const boardObj = useAppSelector((state) => state.board.obj);
+  const dispatch = useAppDispatch()
   const [name, setName] = useState("");
   const queryClient = useQueryClient();
   const {
@@ -19,55 +22,71 @@ export default function Page() {
     isLoadingError,
     error,
     refetch,
-  } = useFetchData("lists", `lists/read/${boardId}`);
-  const createListMutate = useCreateData("create list", `lists/create/${boardId}`, name, "lists");
+    isStale,
+  } = useFetchData("lists", `lists/read/${boardObj.id}`);
+  const createListMutate = useCreateData(
+    "create list",
+    `lists/create/${boardObj.id}`,
+    name,
+    "lists"
+  );
+
+  useEffect(() => {
+    refetch();
+  }, [boardObj.id, createListMutate.isSuccess]);
+  if (!boardObj) {
+    return <div className="flex justify-center items-center">Select a board</div>;
+  }
   if (isError || isLoadingError) {
     console.error(error);
   }
   if (isLoading) {
     return <div className="flex justify-center items-center">Loading lists....</div>;
   }
-  if (isSuccess) {
+  if (isSuccess || isStale) {
     console.log(lists?.data);
 
     return (
-      <div className="grid place-items-center mt-5 w-full h-fit">
+      <div className="flex flex-col justify-center items-center mt-5 relative top-28 object-center w-full h-fit ">
         <Tab.Group>
-          <Tab.List>
-            <div>{boardName}</div>
+          <div>{boardObj.name}</div>
+          <Tab.List className="flex gap-2 space-x-1 rounded-xl bg-blue-900/20 p-1">
             {lists?.data?.map((list: { name: string; id: string }) => {
               return (
-                <Tab key={list.id} className={`text-2xl hover:text-black dark:text-white`}>
+                <Tab
+                  key={list.id}
+                  className={({ selected }) =>
+                    classNames(
+                      "w-fit rounded-lg py-2.5 text-sm font-medium leading-5 ",
+                      "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                      selected
+                        ? "bg-white text-blue-700 shadow"
+                        : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                    )
+                  }
+                  onClick={() => dispatch(setListId(list.id))}
+                >
                   {list.name}
                 </Tab>
               );
             })}
+            <div>
+              <Create parentId={boardObj.id} category="lists" mutationKey="create list" />
+            </div>
+            {/* <div */}
+            {/*   className="w-fit rounded-lg py-2.5 px-4 cursor-pointer text-sm font-medium leading-5 text-blue-700 hover:bg-white/[0.12] hover:text-white" */}
+            {/* > */}
+            {/*   <BsPlusSquareDotted/> */}
+            {/* </div> */}
           </Tab.List>
+          <Tab.Panels className="mt-2">
+            <Tab.Panel></Tab.Panel>
+          </Tab.Panels>
         </Tab.Group>
-        <form onSubmit={createListMutate.mutateAsync}>
-          {" "}
-          <Input
-            placeholder="create list"
-            onChange={(e) => setName(e.target.value)}
-            name="name"
-            id="name"
-          />
-          <Button
-            size="md"
-            width="fit-content"
-            border="2px"
-            color={`white`}
-            flex="1"
-            justifyContent={"center"}
-            alignItems={"center"}
-            className="hover:text-black"
-            borderColor="green.500"
-            type="submit"
-          >
-            +
-          </Button>
-        </form>
       </div>
     );
   }
+}
+function classNames(...classes: any[]) {
+  return classes.filter(Boolean).join(" ");
 }

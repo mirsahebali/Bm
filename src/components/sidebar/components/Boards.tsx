@@ -11,11 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import {
-  setName as setBoardName,
-  setId as setBoardId,
-  setArray as setWsArray,
-} from "@/features/boardSlice";
+import { setObj as setBoardData, setArray as setWsArray } from "@/features/boardSlice";
 export default function Page() {
   const wsId = useAppSelector((state) => state.workspace.id);
 
@@ -52,17 +48,12 @@ export default function Page() {
   }
   if (isError || isLoadingError) {
     console.error(error);
-    refetch();
   }
-  dispatch(setWsArray(boards?.data));
   return (
     <Accordion allowToggle>
       <AccordionItem border={"none"}>
         <h2>
-          <AccordionButton
-            rounded={"xl"}
-            _expanded={{ bg: "#04293A", color: "white" }}
-          >
+          <AccordionButton rounded={"xl"} _expanded={{ bg: "#04293A", color: "white" }}>
             <div className="flex justify-center items-center">Boards</div>
 
             <AccordionIcon />
@@ -71,13 +62,13 @@ export default function Page() {
         <AccordionPanel>
           {boards?.data
             ?.filter((data: { isDeleted: boolean }) => !data.isDeleted)
-            .map((board: { id: string; name: string }) => {
+            .map((board: { id: string; name: string; lists: any[] }) => {
               return (
                 <div
                   key={board.id}
                   onClick={() => {
-                    dispatch(setBoardId(board.id));
-                    dispatch(setBoardName(board.name));
+                    refetch();
+                    dispatch(setBoardData({ id: board.id, name: board.name }));
                   }}
                   className="cursor-pointer p-2 m-1"
                 >

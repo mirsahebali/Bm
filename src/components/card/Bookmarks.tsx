@@ -1,5 +1,6 @@
 import { useFetchData } from "@/functions/query";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect } from "react";
 
 export default function Bookmarks({ listId }: { listId: string }) {
@@ -28,7 +29,7 @@ export default function Bookmarks({ listId }: { listId: string }) {
         return (
           <Link href={bookmark.url} key={bookmark.id}>
             <div>
-              <img src={favicon} alt={bookmark.title} width={20} height={20} />
+              <Image src={favicon} alt={bookmark.title} width={20} height={20} />
             </div>{" "}
             <div> {bookmark.name != "card" && bookmark.name ? bookmark.name : bookmark.title}</div>
           </Link>

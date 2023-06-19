@@ -68,7 +68,7 @@ export default function Page() {
                   key={board.id}
                   onClick={() => {
                     refetch();
-                    dispatch(setBoardData({ id: board.id, name: board.name }));
+                    dispatch(setBoardData({ id: board.id, name: board.name, array: board.lists }));
                   }}
                   className="cursor-pointer p-2 m-1"
                 >

@@ -6,7 +6,6 @@ import Workspace from "@/components/workspaces";
 import CreateWorkspace from "@/components/create/components/create";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
-import { NextResponse } from "next/server";
 import { DeleteWorkspace } from "@/components/workspaces/components/Delete";
 import Trash from "@/components/popover/trash";
 import Search from "@/components/slide_up/search";
@@ -19,7 +18,7 @@ export const metadata = {
 };
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
-  if (!session) {
+  if (!session)
     return (
       <html lang="en">
         <head>
@@ -29,7 +28,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Providers>
             <div className="w-[20%] flex">
               <Sidebar session={session} />
-
               <Navbar />
             </div>
             {children}
@@ -37,7 +35,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </body>
       </html>
     );
-  }
   return (
     <html lang="en">
       <head>
@@ -47,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Providers>
           <div className="w-[20%] flex">
             <Sidebar session={session} />
-            <Workspace user={session.user?.email!}/>
+            <Workspace user={session?.user?.email!} />
             <CreateWorkspace
               category="workspace"
               mutationKey="Create Workspace"
@@ -58,7 +55,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Navbar />
             <div className="">
               <Search />
-
             </div>
           </div>
           {children}

@@ -22,9 +22,9 @@ export default function Page() {
     refetch,
     isStale,
   } = useFetchData("lists", `lists/read/${boardObj.id}`);
-  useEffect(() => {
-    refetch();
-  }, [boardObj.id, refetch]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [boardObj.id, refetch]);
   if (!boardObj) {
     return <div className="flex justify-center items-center">Select a board</div>;
   }
@@ -35,6 +35,7 @@ export default function Page() {
     return <div className="flex justify-center items-center">Loading lists....</div>;
   }
   if (isSuccess && isStale) {
+    console.log("List data:",lists?.data)
     return (
       <div className="flex flex-col justify-center items-center  relative top-28 object-center w-full h-fit ">
         <div>{boardObj.name}</div>

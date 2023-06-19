@@ -8,8 +8,16 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "**.unsplash.com"
-      }
+        hostname: "**.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.peekalink.io",
+      },
+      {
+        protocol: "https",
+        hostname: "www.google.com",
+      },
     ],
   },
 };

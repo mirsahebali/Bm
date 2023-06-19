@@ -7,6 +7,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
     where: {
       wsId: WsId,
     },
+    include: {
+      lists: true
+    }
   });
   return NextResponse.json({ data: data });
 }

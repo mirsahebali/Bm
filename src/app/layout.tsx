@@ -20,7 +20,6 @@ export const metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
   if (!session) {
-    NextResponse.redirect("http://localhost:3000");
     return (
       <html lang="en">
         <head>
@@ -39,7 +38,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </html>
     );
   }
-  
   return (
     <html lang="en">
       <head>
@@ -64,7 +62,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </div>
           {children}
-
         </Providers>
       </body>
     </html>

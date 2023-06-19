@@ -4,13 +4,19 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request, { params }: { params: { data: string[] } }) {
   const [listId] = params.data;
   const body = await req.json();
-  const { data } = await axios.post("https://api.linkpreview.net", {
-    q: body.url,
-    key: process.env.NEXT_PUBLIC_LINKPREVIEW_API_KEY,
-    fields: ["title, description"],
-  });
-  const url = new URL(body.url).hostname;
-  const favicon = `https://www.google.com/s2/favicons?domain=${url}&sz=${20}`;
+ 
+const res = await fetch('https://api.peekalink.io/', {
+    method: 'POST',
+    headers: {
+        'X-API-Key': process.env.NEXT_PUBLIC_PEEKALINK_KEY!,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        link: body.url,
+    })
+})
+const data = await res.json()
+ // const url = new URL(body.url).hostname;
   const bookmark = await prisma.list.update({
     where: {
       id: listId,
@@ -21,7 +27,7 @@ export async function POST(req: Request, { params }: { params: { data: string[] 
           {
             name: body.name,
             url: body.url,
-            favicon: favicon,
+            favicon: data?.image?.url,
             title: data?.title,
             description: data?.description,
           },
@@ -29,14 +35,14 @@ export async function POST(req: Request, { params }: { params: { data: string[] 
       },
     },
   });
-  return NextResponse.json(bookmark)
+  return NextResponse.json(bookmark);
 }
-export async function GET(req:Request, {params}: {params:{data:string[]}}){
+export async function GET(req: Request, { params }: { params: { data: string[] } }) {
   const [listId] = params.data;
   const data = await prisma.bookmark.findMany({
-    where:{
-      listId: listId
-    }
-  })
-return NextResponse.json(data)
+    where: {
+      listId: listId,
+    },
+  });
+  return NextResponse.json(data);
 }

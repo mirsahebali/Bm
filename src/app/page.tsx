@@ -1,19 +1,17 @@
 "use client";
-import { Tab } from "@headlessui/react";
-import { Input, Button } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useState, SyntheticEvent, useEffect, FormEvent } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useFetchData } from "@/functions/query";
-import { useCreateData } from "@/functions/mutation";
-import { setId as setListId } from "@/features/listSlice";
-import { BsPlusSquareDotted } from "react-icons/bs";
+import { setId as setListId, setName as setListName } from "@/features/listSlice";
+import CreateBookmark from "@/components/create/bookmarks";
 import Create from "@/components/create/components/create";
+import Bookmarks from "@/components/card/Bookmarks";
 export default function Page() {
   const boardObj = useAppSelector((state) => state.board.obj);
-  const dispatch = useAppDispatch()
-  const [name, setName] = useState("");
-  const queryClient = useQueryClient();
+  const listId = useAppSelector((state) => state.list.id);
+  const listName = useAppSelector((state) => state.list.name);
+  const dispatch = useAppDispatch();
   const {
     data: lists,
     isError,
@@ -24,16 +22,9 @@ export default function Page() {
     refetch,
     isStale,
   } = useFetchData("lists", `lists/read/${boardObj.id}`);
-  const createListMutate = useCreateData(
-    "create list",
-    `lists/create/${boardObj.id}`,
-    name,
-    "lists"
-  );
-
   useEffect(() => {
     refetch();
-  }, [boardObj.id, createListMutate.isSuccess]);
+  }, [boardObj.id, refetch]);
   if (!boardObj) {
     return <div className="flex justify-center items-center">Select a board</div>;
   }
@@ -43,50 +34,44 @@ export default function Page() {
   if (isLoading) {
     return <div className="flex justify-center items-center">Loading lists....</div>;
   }
-  if (isSuccess || isStale) {
-    console.log(lists?.data);
-
+  if (isSuccess && isStale) {
     return (
-      <div className="flex flex-col justify-center items-center mt-5 relative top-28 object-center w-full h-fit ">
-        <Tab.Group>
-          <div>{boardObj.name}</div>
-          <Tab.List className="flex gap-2 space-x-1 rounded-xl bg-blue-900/20 p-1">
-            {lists?.data?.map((list: { name: string; id: string }) => {
-              return (
-                <Tab
-                  key={list.id}
-                  className={({ selected }) =>
-                    classNames(
-                      "w-fit rounded-lg py-2.5 text-sm font-medium leading-5 ",
-                      "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
-                      selected
-                        ? "bg-white text-blue-700 shadow"
-                        : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
-                    )
-                  }
-                  onClick={() => dispatch(setListId(list.id))}
-                >
-                  {list.name}
-                </Tab>
-              );
-            })}
-            <div>
-              <Create parentId={boardObj.id} category="lists" mutationKey="create list" />
-            </div>
-            {/* <div */}
-            {/*   className="w-fit rounded-lg py-2.5 px-4 cursor-pointer text-sm font-medium leading-5 text-blue-700 hover:bg-white/[0.12] hover:text-white" */}
-            {/* > */}
-            {/*   <BsPlusSquareDotted/> */}
-            {/* </div> */}
-          </Tab.List>
-          <Tab.Panels className="mt-2">
-            <Tab.Panel></Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
+      <div className="flex flex-col justify-center items-center  relative top-28 object-center w-full h-fit ">
+        <div>{boardObj.name}</div>
+        <Tabs mt={`2`} isFitted variant={`enclosed`}>
+          <TabList>
+            {lists?.data?.map((list: { id: string; name: string }) => (
+              <Tab
+                onClick={() => {
+                  dispatch(setListId(list.id));
+                  dispatch(setListName(list.name));
+                }}
+                key={list.id}
+              >
+                {list.name}
+              </Tab>
+            ))}
+            <Tab>
+              <Create parentId={boardObj.id} category={`lists`} mutationKey={`create list`} />
+            </Tab>
+          </TabList>
+          <TabPanels flex={"1"} justifyContent={`center`} placeItems={"center"}>
+            {lists?.data?.map((list: { id: string; name: string }) => (
+              <TabPanel key={list.id}>
+<Bookmarks listId={list.id} key={list.id}/>
+                {/* {isLoading? <div>loading...</div>:(bookmarks?.data?.map()) } */}
+              </TabPanel>
+            ))}
+
+            <CreateBookmark
+              id={listId}
+              mutationKey="create bookmark"
+              category="bookmarks"
+              listName={listName}
+            />
+          </TabPanels>
+        </Tabs>
       </div>
     );
   }
-}
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
 }

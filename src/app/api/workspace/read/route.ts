@@ -15,6 +15,9 @@ export async function GET(
     where: {
       email: session?.user?.email,
     },
+    include:{
+      boards: true
+    }
   });
   return NextResponse.json({ data });
 }

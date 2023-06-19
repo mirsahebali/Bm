@@ -9,6 +9,9 @@ export async function GET(
     where: {
       boardId: id,
     },
+    include:{
+      bookmarks: true
+    }
   });
   return NextResponse.json({ data });
 }

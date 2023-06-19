@@ -29,7 +29,7 @@ export default function Workspaces({ user }: { user: string }) {
   useEffect(() => {
     dispatch(setWSId(selected.id));
     refetch();
-  }, [selected,wsId]);
+  }, [selected,wsId,dispatch, refetch]);
 
   if (isError || isLoadingError) {
     console.error(error);

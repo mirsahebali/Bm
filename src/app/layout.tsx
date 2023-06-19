@@ -19,23 +19,8 @@ export const metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
   if (!session)
-    return (
-      <html lang="en">
-        <head>
-          <link rel="icon" href="/favicon.ico" sizes="any" />
-        </head>
-        <body className={`flex dark:bg-[#041C32] ease-in-out duration-300 dark:text-white`}>
-          <Providers>
-            <div className="w-[20%] flex">
-              <Sidebar session={session} />
-              <Navbar />
-            </div>
-            {children}
-          </Providers>
-        </body>
-      </html>
-    );
-  return (
+  return <div>login</div>;
+ return (
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />

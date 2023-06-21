@@ -1,6 +1,6 @@
 import { useQuery} from "@tanstack/react-query";
 
-export function useFetchData(category: string | string[], fetchUrl: string) {
+export function useFetchData(category:  string[], fetchUrl: string) {
   const {
     data,
     error,
@@ -9,9 +9,10 @@ export function useFetchData(category: string | string[], fetchUrl: string) {
     isLoadingError,
     isSuccess,
     refetch,
-    isStale
+    isStale,
+    
   } = useQuery({
-    queryKey: [category],
+    queryKey: category,
     queryFn: async () => {
       const res = await fetch(`http://localhost:3000/api/${fetchUrl}`, {
         method: "GET",

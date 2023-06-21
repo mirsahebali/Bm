@@ -4,7 +4,7 @@ import Sidebar from "@/components/sidebar/index";
 import Providers from "./Providers";
 import Workspace from "@/components/workspaces";
 import CreateWorkspace from "@/components/create/components/create";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { DeleteWorkspace } from "@/components/workspaces/components/Delete";
 import Trash from "@/components/popover/trash";
@@ -29,7 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Providers>
           <div className="w-[20%] flex">
             <Sidebar session={session} />
-            <Workspace user={session?.user?.email!} />
+            <Workspace user={session.user!.email!} />
             <CreateWorkspace
               category="workspace"
               mutationKey="Create Workspace"

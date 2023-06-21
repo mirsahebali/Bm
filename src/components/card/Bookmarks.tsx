@@ -12,7 +12,7 @@ export default function Bookmarks({ listId }: { listId: string }) {
     isSuccess,
     refetch,
     error,
-  } = useFetchData("bookmarks", `bookmarks/${listId}`);
+  } = useFetchData(["bookmarks", listId], `bookmarks/${listId}`);
   useEffect(() => {
     refetch();
   }, [listId, isSuccess, refetch]);

@@ -9,6 +9,7 @@ import {
   AccordionIcon,
   Box,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { setObj as setBoardData, setArray as setWsArray } from "@/features/boardSlice";
@@ -59,21 +60,19 @@ export default function Page() {
             <AccordionIcon />
           </AccordionButton>
         </h2>
-        <AccordionPanel>
+        <AccordionPanel className="flex flex-col">
           {boards?.data
             ?.filter((data: { isDeleted: boolean }) => !data.isDeleted)
             .map((board: { id: string; name: string; lists: any[] }) => {
+              const name = board.name.split(" ").join("_");
               return (
-                <div
+                <Link
                   key={board.id}
-                  onClick={() => {
-                    refetch();
-                    dispatch(setBoardData({ id: board.id, name: board.name, array: board.lists }));
-                  }}
+                  href={`/board/${board.id}/${name}`}
                   className="cursor-pointer p-2 m-1"
                 >
                   {board.name}
-                </div>
+                </Link>
               );
             })}
         </AccordionPanel>
